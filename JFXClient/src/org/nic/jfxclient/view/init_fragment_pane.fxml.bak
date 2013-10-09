@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="396.0" prefWidth="206.0" styleClass="fragment-background" xmlns:fx="http://javafx.com/fxml">
+  <!-- TODO Add Nodes -->
+  <children>
+    <TextField fx:id="usernameTexfField" alignment="CENTER" layoutX="14.0" layoutY="85.0" prefWidth="170.0" />
+    <TextField fx:id="ipTextField" alignment="CENTER" layoutX="14.0" layoutY="167.0" prefWidth="170.0" />
+    <Label layoutX="14.0" layoutY="63.0" text="Username" />
+    <Label layoutX="14.0" layoutY="145.0" text="Server-IP-Address" />
+    <Button layoutX="67.0" layoutY="213.0" mnemonicParsing="false" onAction="#handleConnectButton" text="Connect" />
+    <Label alignment="CENTER" layoutX="60.0" layoutY="14.0" text="Server - Login" textAlignment="CENTER" />
+  </children>
+  <stylesheets>
+    <URL value="@main_layout.css" />
+  </stylesheets>
+</AnchorPane>

@@ -1,0 +1,55 @@
+.background {
+	
+	-fx-background-color:rgb(193,193,193);
+	
+}
+
+.fragment-background {
+	
+	-fx-background-color:rgb(63,63,63)
+	
+}
+
+
+.button  {
+	
+	-fx-background-radius: 0;
+	-fx-background-color:rgb(63,63,63);
+	-fx-border-color: white;
+	-fx-text-fill:white;	
+}
+
+.button:hover {
+	
+	-fx-border-width: 3px;
+	
+}
+
+.button:pressed, .button:default:hover:pressed {
+	-fx-background-color:white;
+	-fx-text-fill:rgb(63,63,63);	
+	-fx-border-width:0px;
+	-fx-border-color: rgb(63,63,63);
+  
+}
+
+.label {
+	
+	-fx-text-fill:white;
+	-fx-font-size:14pt;
+	
+}
+
+.text-field {
+	
+	-fx-highlight-fill: black;
+	-fx-background-color:rgb(115,115,115);
+	-fx-background-radius: 0;
+	
+}
+
+.text-field:focused {
+	
+	-fx-border-color: black;
+	
+}
