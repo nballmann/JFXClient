@@ -6,8 +6,13 @@ import java.io.ObjectOutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javafx.application.Application;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -39,9 +44,27 @@ public class JFXClient extends Application{
 
 	public String username = "";
 
-	private int x = 0;
-	private int y = 0;
+	private IntegerProperty x = new SimpleIntegerProperty(0);
+	private IntegerProperty y = new SimpleIntegerProperty(0);
+	
+	private ReadWriteLock lock = new ReentrantReadWriteLock();
+	private Lock 	readLock = lock.readLock(),
+					writeLock = lock.writeLock();
 
+	public int getX() { return x.get(); }
+	public IntegerProperty xProperty() { return x; }
+	
+	public void setX(final int x) {
+		this.x.set(x);
+	}
+	
+	public int getY() { return y.get(); }
+	public IntegerProperty yProperty() { return y; }
+	
+	public void setY(final int y) {
+		this.y.set(y);
+	}
+	
 	private Runnable send = new Runnable() {
 
 		@Override
@@ -52,15 +75,18 @@ public class JFXClient extends Application{
 			while(connected) {
 
 				synchronized (this) {
+//				readLock.lock();
 
 					if(socket != null) {
 
 						try {
+							
+							Thread.sleep(100);
 
 							DataPackage dp = new DataPackage();
 
-							dp.x = x;
-							dp.y = y;
+							dp.x = x.get();
+							dp.y = y.get();
 							dp.username = username;
 
 							oos = new ObjectOutputStream(socket.getOutputStream());
@@ -88,6 +114,11 @@ public class JFXClient extends Application{
 							mainController.showPanel("InitFragment");
 //							e.printStackTrace();
 						}
+						finally {
+							
+//							readLock.unlock();
+							
+						}
 
 					}
 					else { // temporary
@@ -111,8 +142,12 @@ public class JFXClient extends Application{
 			while(connected) {
 
 				synchronized (this) {
+				
+//				writeLock.lock();
 
 					try {
+						
+						Thread.sleep(100);
 
 						ois = new ObjectInputStream(socket.getInputStream());
 						int receiveState = (Integer) ois.readObject();
@@ -127,8 +162,7 @@ public class JFXClient extends Application{
 
 							mainController.addTextAreaEntry("\r\nDisconnected by Server");
 							
-							break;
-
+//							break;
 						}
 						else if(receiveState == 2) { // server disconnected
 
@@ -138,10 +172,11 @@ public class JFXClient extends Application{
 
 							mainController.addTextAreaEntry("\r\nServer Disconnected");
 
-							break;
+//							break;
 						}
 
 						ois = new ObjectInputStream(socket.getInputStream());
+						
 						@SuppressWarnings("unchecked")
 						ArrayList<DataPackage> dataList = (ArrayList<DataPackage>) ois.readObject();
 
@@ -181,6 +216,11 @@ public class JFXClient extends Application{
 						mainController.showPanel("InitFragment");
 						e.printStackTrace(); 
 					}
+					finally {
+						
+//						writeLock.unlock();
+						
+					}
 
 				}
 
@@ -192,7 +232,6 @@ public class JFXClient extends Application{
 
 	@Override
 	public void start(Stage stage) throws Exception {
-
 
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("view/main_view.fxml"));
 
@@ -236,7 +275,6 @@ public class JFXClient extends Application{
 
 		});
 
-
 		stage.setTitle("JFX Client");
 		stage.show();
 
@@ -254,7 +292,6 @@ public class JFXClient extends Application{
 		mainController.addPanel("InitFragment", pane);
 		mainController.showPanel("InitFragment");
 
-
 	}
 
 	private void loadUserFragment() throws Exception {
@@ -265,9 +302,9 @@ public class JFXClient extends Application{
 
 		userController = loader.getController();
 		userController.setMainApp(this);
+		userController.init();
 
 		mainController.addPanel("UserFragment", pane);
-
 
 	}
 
@@ -276,6 +313,7 @@ public class JFXClient extends Application{
 		int port = Integer.parseInt(ipString.substring(ipString.indexOf(":") + 1));
 		String ip = ipString.substring(0, ipString.indexOf(":"));
 		this.username = username;
+		userController.clientUsername = username;
 
 		ObjectOutputStream oos = null;
 		ObjectInputStream ois = null;
