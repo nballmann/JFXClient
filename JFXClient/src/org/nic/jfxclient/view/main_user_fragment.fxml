@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="userPane" prefHeight="396.0" prefWidth="206.0" styleClass="fragment-background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.nic.jfxclient.controller.MainUserController">
+<AnchorPane fx:id="userPane" maxHeight="396.0" maxWidth="206.0" minHeight="396.0" minWidth="206.0" prefHeight="396.0" prefWidth="206.0" styleClass="fragment-background" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="org.nic.jfxclient.controller.MainUserController">
   <!-- TODO Add Nodes -->
   <stylesheets>
     <URL value="@main_layout.css" />

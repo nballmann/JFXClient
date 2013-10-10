@@ -44,8 +44,8 @@ public class JFXClient extends Application{
 
 	public String username = "";
 
-	private IntegerProperty x = new SimpleIntegerProperty(0);
-	private IntegerProperty y = new SimpleIntegerProperty(0);
+	private IntegerProperty x = new SimpleIntegerProperty(20);
+	private IntegerProperty y = new SimpleIntegerProperty(15);
 	
 	private ReadWriteLock lock = new ReentrantReadWriteLock();
 	private Lock 	readLock = lock.readLock(),
@@ -81,7 +81,7 @@ public class JFXClient extends Application{
 
 						try {
 							
-							Thread.sleep(100);
+							Thread.sleep(10);
 
 							DataPackage dp = new DataPackage();
 
@@ -147,38 +147,36 @@ public class JFXClient extends Application{
 
 					try {
 						
-						Thread.sleep(100);
+						Thread.sleep(10);
 
 						ois = new ObjectInputStream(socket.getInputStream());
 						int receiveState = (Integer) ois.readObject();
 
 						//					System.out.println("Client/receive: state");
 
-						if(receiveState == 1) { // disconnected by server
-
-							connected = false;
-							socket = null;
-							mainController.showPanel("InitFragment");
-
-							mainController.addTextAreaEntry("\r\nDisconnected by Server");
-							
-//							break;
-						}
-						else if(receiveState == 2) { // server disconnected
-
-							connected = false;
-							socket = null;
-							mainController.showPanel("InitFragment");
-
-							mainController.addTextAreaEntry("\r\nServer Disconnected");
-
-//							break;
-						}
-
 						ois = new ObjectInputStream(socket.getInputStream());
 						
 						@SuppressWarnings("unchecked")
 						ArrayList<DataPackage> dataList = (ArrayList<DataPackage>) ois.readObject();
+						
+						if(receiveState == 1) { // disconnected by server
+							
+							connected = false;
+							socket = null;
+							mainController.showPanel("InitFragment");
+							
+							mainController.addTextAreaEntry("\r\nDisconnected by Server");
+							
+						}
+						else if(receiveState == 2) { // server disconnected
+							
+							connected = false;
+							socket = null;
+							mainController.showPanel("InitFragment");
+							
+							mainController.addTextAreaEntry("\r\nServer Disconnected");
+							
+						}
 
 						//					System.out.println("Client/receive: dataList");
 
@@ -207,6 +205,7 @@ public class JFXClient extends Application{
 							}
 
 							userController.addUserRect(dp);
+							userController.checkUserExistance(dataList);
 
 						}
 
@@ -243,6 +242,8 @@ public class JFXClient extends Application{
 		loadInitFragment();
 		initController.init();
 
+		setY((int)(Math.random()*300+50));
+		
 		loadUserFragment();
 
 		Scene scene = new Scene(parent);
