@@ -34,10 +34,10 @@ public class MainUserController implements ControllerInterface {
 
 	public void init() {
 
-		userRect.xProperty().bindBidirectional(mainApp.xProperty());
-		userRect.yProperty().bindBidirectional(mainApp.yProperty());
+		userRect.layoutXProperty().bindBidirectional(mainApp.xProperty());
+		userRect.layoutYProperty().bindBidirectional(mainApp.yProperty());
 
-		userPane.getChildren().add(userRect);		
+		userPane.getChildren().add(userRect);
 
 		userRect.setOnMousePressed(new EventHandler<MouseEvent>() {
 
@@ -48,7 +48,7 @@ public class MainUserController implements ControllerInterface {
 					deltaX = userRect.getLayoutX() - e.getSceneX();
 					deltaY = userRect.getLayoutY() -  e.getSceneY();
 
-					System.out.println(e.getSceneX() + " : " + e.getSceneY());
+//					System.out.println(e.getSceneX() + " : " + e.getSceneY());
 					System.out.println(mainApp.getX() + " : " + mainApp.getY());
 				}
 			}
@@ -62,21 +62,21 @@ public class MainUserController implements ControllerInterface {
 
 				if(e.getButton() == MouseButton.PRIMARY) {
 
-					System.out.println( deltaX + " : " + deltaY );
-					userRect.setLayoutX((int)(e.getSceneX() + deltaX));
-					userRect.setLayoutY((int)(e.getSceneY() + deltaY));
+//					System.out.println( deltaX + " : " + deltaY );
+					userRect.setLayoutX(e.getSceneX() + deltaX);
+					userRect.setLayoutY(e.getSceneY() + deltaY);
 
-					if(userRect.xProperty().get() < 0) {
-						userRect.xProperty().set(0);
+					if(userRect.layoutXProperty().get() < 0) {
+						mainApp.setX(0);
 					}
-					if(userRect.xProperty().get() > (userPane.getPrefWidth()-15)) {
-						userRect.setLayoutX((int)userPane.getPrefWidth()-15);
+					if(userRect.layoutXProperty().get() > (userPane.getPrefWidth()-15)) {
+						mainApp.setX((int)userPane.getPrefWidth()-15);
 					}
-					if(userRect.yProperty().get() < 0) {
-						userRect.yProperty().set(0);
+					if(userRect.layoutYProperty().get() < 0) {
+						mainApp.setY(0);
 					}
-					if(userRect.yProperty().get() > (userPane.getPrefHeight()-15)) {
-						userRect.setLayoutY((int)userPane.getPrefHeight()-15);
+					if(userRect.layoutYProperty().get() > (userPane.getPrefHeight()-15)) {
+						mainApp.setY((int)userPane.getPrefHeight()-15);
 					}
 				}
 
@@ -158,8 +158,8 @@ public class MainUserController implements ControllerInterface {
 					@Override
 					public void run() {
 
-						users.get(dp.username).setLayoutX((int) dp.x);
-						users.get(dp.username).setLayoutY((int) dp.y);
+						users.get(dp.username).setX(dp.x);
+						users.get(dp.username).setY(dp.y);
 
 					}
 
@@ -170,7 +170,9 @@ public class MainUserController implements ControllerInterface {
 
 				final Rectangle rect = new Rectangle(dp.x, dp.y, 15, 15);
 				rect.setFill(Color.RED);
-
+				rect.setX(dp.x);//setLayoutX(dp.x);
+				rect.setY(dp.y);//setLayoutY(dp.y);
+				
 				addUser(dp.username, rect);
 
 				Platform.runLater(new Runnable() {
@@ -180,6 +182,7 @@ public class MainUserController implements ControllerInterface {
 
 						userPane.getChildren().add(users.get(dp.username));
 
+						userRect.toFront();
 					}
 
 				});

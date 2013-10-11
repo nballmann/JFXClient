@@ -44,27 +44,27 @@ public class JFXClient extends Application{
 
 	public String username = "";
 
-	private IntegerProperty x = new SimpleIntegerProperty(20);
-	private IntegerProperty y = new SimpleIntegerProperty(15);
-	
+	private IntegerProperty x = new SimpleIntegerProperty(0);
+	private IntegerProperty y = new SimpleIntegerProperty(0);
+
 	private ReadWriteLock lock = new ReentrantReadWriteLock();
 	private Lock 	readLock = lock.readLock(),
 					writeLock = lock.writeLock();
 
 	public int getX() { return x.get(); }
 	public IntegerProperty xProperty() { return x; }
-	
-	public void setX(final int x) {
+
+	public void setX(int x) {
 		this.x.set(x);
 	}
-	
+
 	public int getY() { return y.get(); }
 	public IntegerProperty yProperty() { return y; }
-	
-	public void setY(final int y) {
+
+	public void setY(int y) {
 		this.y.set(y);
 	}
-	
+
 	private Runnable send = new Runnable() {
 
 		@Override
@@ -75,13 +75,14 @@ public class JFXClient extends Application{
 			while(connected) {
 
 				synchronized (this) {
-//				readLock.lock();
+
+					//				writeLock.lock();
 
 					if(socket != null) {
 
 						try {
-							
-							Thread.sleep(10);
+
+							Thread.sleep(1);
 
 							DataPackage dp = new DataPackage();
 
@@ -96,7 +97,7 @@ public class JFXClient extends Application{
 							oos = new ObjectOutputStream(socket.getOutputStream());
 							oos.writeObject(dp);
 
-							//						System.out.println("Send: DataPackage");
+//							System.out.println("Client/Send: DataPackage " + dp.x + " : " + dp.y);
 
 							if (state == 1) { // client disconnected
 
@@ -112,12 +113,12 @@ public class JFXClient extends Application{
 							connected = false;
 							socket = null;
 							mainController.showPanel("InitFragment");
-//							e.printStackTrace();
+							//							e.printStackTrace();
 						}
 						finally {
-							
-//							readLock.unlock();
-							
+
+							//							writeLock.unlock();
+
 						}
 
 					}
@@ -142,12 +143,12 @@ public class JFXClient extends Application{
 			while(connected) {
 
 				synchronized (this) {
-				
-//				writeLock.lock();
+
+					//				writeLock.lock();
 
 					try {
-						
-						Thread.sleep(10);
+
+						Thread.sleep(1);
 
 						ois = new ObjectInputStream(socket.getInputStream());
 						int receiveState = (Integer) ois.readObject();
@@ -155,27 +156,27 @@ public class JFXClient extends Application{
 						//					System.out.println("Client/receive: state");
 
 						ois = new ObjectInputStream(socket.getInputStream());
-						
+
 						@SuppressWarnings("unchecked")
 						ArrayList<DataPackage> dataList = (ArrayList<DataPackage>) ois.readObject();
-						
+
 						if(receiveState == 1) { // disconnected by server
-							
+
 							connected = false;
 							socket = null;
 							mainController.showPanel("InitFragment");
-							
+
 							mainController.addTextAreaEntry("\r\nDisconnected by Server");
-							
+
 						}
 						else if(receiveState == 2) { // server disconnected
-							
+
 							connected = false;
 							socket = null;
 							mainController.showPanel("InitFragment");
-							
+
 							mainController.addTextAreaEntry("\r\nServer Disconnected");
-							
+
 						}
 
 						//					System.out.println("Client/receive: dataList");
@@ -183,6 +184,8 @@ public class JFXClient extends Application{
 						for(int i = 0; i < dataList.size(); i++) {
 
 							DataPackage dp = dataList.get(i);
+
+//							System.out.println("Client/Receive: " + dp.username + ": " + dp.x + " : " + dp.y);
 
 							if(dataList.size() != others.size()) {
 
@@ -216,9 +219,9 @@ public class JFXClient extends Application{
 						e.printStackTrace(); 
 					}
 					finally {
-						
-//						writeLock.unlock();
-						
+
+						//						writeLock.unlock();
+
 					}
 
 				}
@@ -242,8 +245,6 @@ public class JFXClient extends Application{
 		loadInitFragment();
 		initController.init();
 
-		setY((int)(Math.random()*300+50));
-		
 		loadUserFragment();
 
 		Scene scene = new Scene(parent);
@@ -261,7 +262,7 @@ public class JFXClient extends Application{
 					state = 1;
 
 				}
-				
+
 				try {
 					Thread.sleep(200);
 				} catch (InterruptedException e1) {
