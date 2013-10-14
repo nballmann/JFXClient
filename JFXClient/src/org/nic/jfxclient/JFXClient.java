@@ -338,6 +338,20 @@ public class JFXClient extends Application{
 		catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}	
+		finally {
+			
+//			if(oos != null) {
+//				try {
+//					oos.close();
+//				} catch (Exception e2) { /* nothing more to do */ }
+//			}
+//			if(ois != null) {
+//				try {
+//					ois.close();
+//				} catch (Exception e2) { /* nothing more to do */ }
+//			}
+//			
+		}
 
 	}
 
