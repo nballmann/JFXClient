@@ -18,11 +18,8 @@ public class MainViewController implements ControllerInterface {
 	
 	@FXML
 	private StackPane panelChanger;
-
 	
-	@SuppressWarnings("unused")
 	private JFXClient mainApp;
-	
 	
 	private HashMap<String, Node> nodes = new HashMap<>();
 	
@@ -31,7 +28,6 @@ public class MainViewController implements ControllerInterface {
 		this.mainApp = mainApp;
 		
 	}
-
 	
 	public void addTextAreaEntry(final String entry) {
 		
@@ -65,6 +61,22 @@ public class MainViewController implements ControllerInterface {
 				}
 				
 				panelChanger.getChildren().add(nodes.get(panelName));
+				
+			}
+			
+		});
+		
+	}
+	
+	@FXML
+	private void handleMenuClose() {
+		
+		Platform.runLater(new Runnable() {
+
+			@Override
+			public void run() {
+				
+				mainApp.cleanUpAndExit();
 				
 			}
 			

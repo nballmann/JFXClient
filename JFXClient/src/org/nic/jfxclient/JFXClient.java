@@ -256,23 +256,7 @@ public class JFXClient extends Application{
 			@Override
 			public void handle(WindowEvent e) {
 
-				if ( socket != null ) {
-
-					connected = false;
-					state = 1;
-
-				}
-
-				try {
-					Thread.sleep(200);
-				} catch (InterruptedException e1) {
-					e1.printStackTrace();
-				}
-
-				receive = null;
-				send = null;
-
-				System.exit(0);
+				cleanUpAndExit();
 			}
 
 		});
@@ -305,6 +289,7 @@ public class JFXClient extends Application{
 		userController = loader.getController();
 		userController.setMainApp(this);
 		userController.init();
+		
 
 		mainController.addPanel("UserFragment", pane);
 
@@ -315,7 +300,7 @@ public class JFXClient extends Application{
 		int port = Integer.parseInt(ipString.substring(ipString.indexOf(":") + 1));
 		String ip = ipString.substring(0, ipString.indexOf(":"));
 		this.username = username;
-		userController.clientUsername = username;
+		userController.clientUsernameProperty().setValue(username);
 
 		ObjectOutputStream oos = null;
 		ObjectInputStream ois = null;
@@ -356,6 +341,30 @@ public class JFXClient extends Application{
 
 	}
 
+	/**
+	 * 
+	 */
+	public void cleanUpAndExit() {
+		
+		if ( socket != null ) {
+
+			connected = false;
+			state = 1;
+
+		}
+
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+
+		receive = null;
+		send = null;
+
+		System.exit(0);
+	}
+	
 	/**
 	 * @param args
 	 */
